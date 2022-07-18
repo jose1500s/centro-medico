@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <title>Centro Medico</title>
 </head>
 <body>
@@ -19,19 +21,45 @@
             <p>Darkmode OFF</p>
         </div>
    </nav>
-
+   <!-- ver los mensajes flash flask -->
+   {% with messages = get_flashed_messages() %}
+   {% if messages %}
+   {% for message in messages %}
+     <script>
+     Toastify({
+       text: "{{ message }}",
+       className: "info",
+       duration: 2000,
+       gravity: "end",
+       position: "center",
+       offset: {
+       x: 120, 
+       y: 260 
+       },
+       style: {
+         background: "linear-gradient(to right, #71C5EE, #025091)",
+         color: "#fff",
+         fontSize: "1.2rem",
+         textAlign: "center",
+         borderRadius: "0.5rem"
+       }
+     }).showToast();
+     </script>
+   {% endfor %}
+   {% endif %}
+   {% endwith %}
    <main>
         <div class="lado-izquierdo">
             <div class="contenedor-principal">
                 <div class="logo-texto">
                     <img src="../static/img/Health _Isometric.svg" alt="">
-                    <P>Bienvenido a su centro médico doctor</P>
+                    <P>Bienvenido a MedicalUPQ</P>
                 </div>
             
                 <div class="contenedor-formulario">
                     <div class="input-container">
-                        <form  method="POST">
-                            <input type="text" name="rfc" placeholder="RFC">
+                        <form action="/login"  method="POST">
+                            <input type="text" name="rfc" placeholder="RFC" id="inputID">
                             <input type="password" name="pass" placeholder="Contraseña">
                             <br>
                             <div>

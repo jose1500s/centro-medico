@@ -111,3 +111,7 @@ main {
   background-color: #05376fda;
   cursor: pointer;
 }
+
+#inputID {
+  text-transform: uppercase;
+}
