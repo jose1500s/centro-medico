@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+  <!-- Coding by CodingLab | www.codinglabweb.com -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/3d529fade9.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../static/css/admins.css">
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <title>Administración</title>
+    <link rel="shortcut icon" href="../static/img/icon_43d242a8c7d8a646896a7e71627d7247.ico" type="image/x-icon">
+   
+</head>
+<body>
+  <!-- ver los mensajes flash flask -->
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  {% for message in messages %}
+    <script>
+    Toastify({
+      text: "{{ message }}",
+      className: "info",
+      duration: 2000,
+      gravity: "top",
+      position: "center",
+      style: {
+        background: "linear-gradient(to right, #3378FF, #9442FE)",
+        color: "#fff",
+        fontSize: "1.2rem",
+        textAlign: "center",
+        borderRadius: "0.5rem"
+      }
+    }).showToast();
+    </script>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+    <nav class="sidebar">
+        <header>
+            <div class="image-text">
+                <span class="image">
+                      <img src="../static/img/Logo.png" alt="">
+                </span>
+
+                <div class="text logo-text">
+                    <span class="name">MedicalUPQ</span>
+                    <span class="profession">Centro Médico</span>
+                </div>
+            </div>
+
+            <i class='bx bx-chevron-right toggle'></i>
+        </header>
+
+        <div class="menu-bar">
+            <div class="menu">
+
+                <li class="search-box">
+                    <i class="fa-solid fa-magnifying-glass icon"></i>
+                    <input type="text" placeholder="Buscar...">
+                </li>
+                
+                <ul class="menu-links">
+
+                  <li class="nav-link">
+                    <a href="#">
+                        <i class="fa-solid fa-address-card icon"></i>
+                        <span class="text nav-text">Administración</span>
+                    </a>
+                  </li>
+                  <li class="nav-link">
+                    <a href="/pacientes">
+                        <i class="fa-solid fa-folder-plus icon"></i>
+                        <span class="text nav-text">Gen. Expediente</span>
+                    </a>
+                  </li>
+
+                    <li class="nav-link">
+                        <a href="#">
+                            <i class="fa-solid fa-stethoscope icon"></i>
+                            <span class="text nav-text">Exploración y <br>Diagnóstico</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-link">
+                        <a href="#">
+                            <i class="fa-solid fa-book-medical icon"></i>
+                            <span class="text nav-text">Consultar Citas</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bottom-content">
+                <li class="">
+                    <a href="/logout">
+                        <i class='bx bx-log-out icon' ></i>
+                        <span class="text nav-text">Cerrar Sesión</span>
+                    </a>
+                </li>
+
+                <li class="mode">
+                    <div class="sun-moon">
+                        <i class='bx bx-moon icon moon'></i>
+                        <i class='bx bx-sun icon sun'></i>
+                    </div>
+                    <span class="mode-text text">Dark mode</span>
+
+                    <div class="toggle-switch">
+                        <span class="switch"></span>
+                    </div>
+                </li>
+            </div>
+        </div>
+    </nav>
+
+    <section class="home">
+        <div class="nombre">
+          <div class="text">{{nombre}} <br> {{rfc}} </div>
+
+          <i class="fa-solid fa-monitor-waveform icon"></i>
+        </div>
+        <center><h2 id="titulo">Administración De Personal Médico</h2></center>
+        <div class="tabla_medicos" >
+          <table id="table">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">RFC</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Cedula</th>
+                <th scope="col">Correo</th>
+                <th scope="col">Password</th>
+                <th scope="col">Rol</th>
+                <th scope="col">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for doctor in doctores %}
+              <tr>
+                <td>{{doctor.0}}</td>
+                <td>{{doctor.1}}</td>
+                <td>{{doctor.2}}</td>
+                <td>{{doctor.3}}</td>
+                <td>{{doctor.4}}</td>
+                <td >{{doctor.5[20:35]}}</td>
+                {% if doctor.6 == 1 %}
+                  <td>Doctor</td>
+                {% else %}
+                  <td>Administrador</td>
+                {% endif %}
+                <td>
+                  <a class="editar" data-rfc="{{doctor.1}}" data-nombre="{{doctor.2}}" 
+                  data-cedula="{{doctor.3}}" data-correo="{{doctor.4}}"">
+                    <i class='bx bx-edit icon'></i>
+                  </a>
+        
+                  <a href="/eliminar_medico/{{doctor.0}}">
+                    <i class='bx bx-trash icon'></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="botones">
+          <button id="btnAbrirModal">Registrar nuevo Médico</button>
+        </div>
+
+        <dialog id="modal">
+          <div class="titulo-cerrar">
+            <h2>Registro de medico</h2>
+            <a id="btnCerrarModal">
+              <i class='bx bx-x icon'></i>
+            </a>
+          </div>
+          <form action="/registrar_medico" method="POST">
+            <label for="rfc">RFC:</label>
+            <input type="text" name="rfc" id="rfc" required>
+            <label for="nombre">Nombre:</label>
+            <input type="text" name="nombre" id="nombre" required>
+            <label for="cedula">Cedula:</label>
+            <input type="text" name="cedula" id="cedula" required>
+            <label for="correo">Correo:</label>
+            <input type="text" name="correo" id="correo" required>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" required>
+            <label for="confirmacionPass">Confirma la password:</label>
+            <input type="password" name="confirmacionPass" id="confirmacionPass" required>
+            <label for="rol">Rol:</label>
+            <select name="rol" id="rol" required>
+              <option value="1">Doctor</option>
+              <option value="2">Administrador</option>
+            </select>
+            <button type="submit">Registrar</button>
+          </form>
+        </dialog>
+
+        <dialog id="modalEditarDoctor">
+          <div class="titulo-cerrar">
+            <h2> Editar médico </h2>
+            <a id="btnCerrarModalMedico">
+              <i class='bx bx-x icon'></i>
+            </a>
+          </div>
+          <form action="/editar_medico" method="POST">
+            <label for="nombre">RFC:</label>
+            <input type="text" name="rfc_nuevo" id="rfc_editar" required>
+            <label for="nombre">Nombre:</label>
+            <input type="text" name="nombre_nuevo" id="nombre_editar" required>
+            <label for="cedula">Cedula:</label>
+            <input type="text" name="cedula_nuevo" id="cedula_editar" required>
+            <label for="correo">Correo:</label>
+            <input type="text" name="correo_nuevo" id="correo_editar" required>
+            <label for="password">Nueva Password:</label>
+            <input type="password" name="password_nueva" id="password_editar" required>
+            <label for="confirmacionPass">Confirma la password:</label>
+            <input type="password" name="confirmacionPass_nueva" id="confirmacionPass_editar" required>
+            <label for="rol">Rol:</label>
+            <select name="rol_nuevo" id="rol_editar" required>
+              <option value="1">Doctor</option>
+              <option value="2">Administrador</option>
+            </select>
+            <button type="submit">Actualizar</button>
+          </form>
+        </dialog>
+
+        
+    </section>
+    
+        
+
+    <script src="../static/js/sideBar.js"></script>
+    <script src="../static/js/modal.js"></script>
+    <script src="../static/js/modalEditarDoctor.js"></script>
+</body>
+</html>
