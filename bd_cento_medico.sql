@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-07-2022 a las 03:58:43
+-- Tiempo de generación: 25-07-2022 a las 06:08:32
 -- Versión del servidor: 10.4.24-MariaDB
 -- Versión de PHP: 8.1.6
 
@@ -31,7 +31,7 @@ CREATE TABLE `tb_citas` (
   `id_cita` int(11) NOT NULL,
   `id_expediente` int(11) NOT NULL,
   `id_doctor` int(11) NOT NULL,
-  `Fecha` date NOT NULL,
+  `Fecha` datetime NOT NULL,
   `Peso` decimal(10,0) NOT NULL,
   `Altura` int(3) NOT NULL,
   `Temperatura` int(2) NOT NULL,
@@ -40,10 +40,18 @@ CREATE TABLE `tb_citas` (
   `Glucosa` int(11) NOT NULL,
   `Edad` int(11) NOT NULL,
   `Sintomas` varchar(300) NOT NULL,
-  `Diagnostico` varchar(300) NOT NULL,
   `Tratamiento` varchar(250) NOT NULL,
-  `Estudios` varchar(2) DEFAULT NULL
+  `Estudios` varchar(20) DEFAULT 'no aplica',
+  `Indicaciones` varchar(300) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `tb_citas`
+--
+
+INSERT INTO `tb_citas` (`id_cita`, `id_expediente`, `id_doctor`, `Fecha`, `Peso`, `Altura`, `Temperatura`, `Latidos`, `Saturacion_oxigeno`, `Glucosa`, `Edad`, `Sintomas`, `Tratamiento`, `Estudios`, `Indicaciones`) VALUES
+(1, 1, 14, '2022-07-24 14:24:00', '67', 174, 34, 89, 22, 33, 20, 'se 100te mal', 'paracetamol 1kg ', 'no aplica', '1 cada 5 minutos'),
+(2, 2, 14, '2022-07-24 03:06:00', '89', 188, 34, 78, 27, 34, 25, 'se siente mal tmb', 'naproxeno 1mg', 'no aplica', '1 cada año');
 
 -- --------------------------------------------------------
 
@@ -91,7 +99,9 @@ CREATE TABLE `tb_expedientes` (
 --
 
 INSERT INTO `tb_expedientes` (`id_expediente`, `id_doctor`, `Nombre`, `Fecha_nacimiento`, `Enfermedades`, `Alergias`, `Antecedentes`) VALUES
-(1, 14, 'juan antonio morales', '2000-06-06', 'ta medio wey', 'al estudio', 'nada');
+(1, 14, 'juan antonio morales', '2000-06-06', 'ninguno', 'ninguno', 'ninguno'),
+(2, 14, 'miguel angel reyes', '1987-08-18', 'Hipertension', 'ninguna', 'ninguno'),
+(3, 17, 'alondra sanchez cordero', '1999-02-10', 'ninguna', 'ninguna', 'ninguna');
 
 --
 -- Índices para tablas volcadas
@@ -126,7 +136,7 @@ ALTER TABLE `tb_expedientes`
 -- AUTO_INCREMENT de la tabla `tb_citas`
 --
 ALTER TABLE `tb_citas`
-  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_cita` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `tb_doctores`
@@ -138,7 +148,7 @@ ALTER TABLE `tb_doctores`
 -- AUTO_INCREMENT de la tabla `tb_expedientes`
 --
 ALTER TABLE `tb_expedientes`
-  MODIFY `id_expediente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_expediente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas

@@ -10,7 +10,7 @@
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <title>Pacientes</title>
+    <title>Ver Pacientes</title>
     <link rel="shortcut icon" href="../static/img/icon_43d242a8c7d8a646896a7e71627d7247.ico" type="image/x-icon">
     <style>
         .formulario {
@@ -101,7 +101,7 @@
                     </a>
                   </li>
                   <li class="nav-link">
-                    <a href="#">
+                    <a href="/pacientes">
                         <i class="fa-solid fa-folder-plus icon"></i>
                         <span class="text nav-text">Gen. Expediente</span>
                     </a>
@@ -156,39 +156,72 @@
     <section class="home">
         <div class="nombre">
           <div class="text">{{nombre}} <br> {{rfc}} </div>
-
           <i class="fa-solid fa-monitor-waveform icon"></i>
         </div>
-        <center><h2 id="titulo">Generar Nuevo Expediente</h2></center>
-        <center><p style="font-size: 14px;">Se te asignara este paciente en automatico!</p></center>
-        <div class="formulario">
-          <form action="/registrar_paciente" method="post">
-            <div class="input-group">
+        <center><h2 id="titulo">Tus pacientes</h2></center>
+        <div class="tabla_medicos" >
+            <table id="table">
+              <thead>
+                <tr>
+                  <th scope="col">ID <br> Paciente</th>
+                  <th scope="col">ID <br> Doctor</th>
+                  <th scope="col">Nombre Paciente</th>
+                  <th scope="col">Fecha Nacimiento</th>
+                  <th scope="col">Enfermedades</th>
+                  <th scope="col">Alergias</th>
+                  <th scope="col">Antecedentes</th>
+                  <th scope="col">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for expediente in expedientes %}
+                <tr>
+                  <td>{{expediente.0}}</td>
+                  <td>{{expediente.1}}</td>
+                  <td>{{expediente.2}}</td>
+                  <td>{{expediente.3}}</td>
+                  <td>{{expediente.4}}</td>
+                  <td>{{expediente.5}}</td>
+                  <td>{{expediente.6}}</td>
+                  <td>
+                    <a class="editar" data-id_paciente="{{expediente.0}}" data-nombre="{{expediente.2}}" 
+                        data-fecha="{{expediente.3}}"
+                        data-enfermedades="{{expediente.4}}" data-alergias="{{expediente.5}}"
+                        data-antecedentes="{{expediente.6}}">
+                      <i class='bx bx-edit icon'></i>
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <dialog id="modalEditarDoctor">
+            <div class="titulo-cerrar">
+              <h2> Editar Datos Paciente </h2>
+              <a id="btnCerrarModalMedico">
+                <i class='bx bx-x icon'></i>
+              </a>
+            </div>
+            <form action="/editar_paciente" method="POST">
+              <input type="text" name="id_paciente" id="id_paciente" hidden>
               <label for="nombre">Nombre</label>
-              <input type="text" name="nombre" id="nombre">
-            </div>
-            <div class="input-group">
-              <label for="fecha">Fecha de Nacimiento</label>
-              <input type="date" name="fecha" id="fecha">
-            </div>
-            <div class="input-group">
-              <label for="enfermedades">Enfermedades</label>
-              <input type="text" name="enfermedades" id="enfermedades">
-            </div>
-            <div class="input-group">
-              <label for="alergias">Alergias</label>
-              <input type="text" name="alergias" id="alergias">
-            </div>
-            <div class="input-group">
-              <label for="antecedentes">Antecedentes</label>
-              <input type="text" name="antecedentes" id="antecedentes">
-            </div>
-            <div class="input-group">
-              <div class="boton-registro">
-                <button type="submit" name="button">Registrar</button>
-              </div>
-            </div>
-          </form>
+              <input type="text" name="nombre_nuevo" id="nombre_editar" required>
+              <label for="nombre">Fecha Nacimiento</label>
+              <input type="date" name="fecha_nacimiento_nuevo" id="fecha_nacimiento_nueva" required>
+              <label for="cedula">Enfermedades</label>
+              <input type="text" name="enfermedades_nuevo" id="enfermedades_nuevo" >
+              <label for="correo">Alergias</label>
+              <input type="text" name="alergias_nuevo" id="alergias_nuevo" >
+              <label for="password">Antecedentes</label>
+              <input type="text" name="antecedentes_nuevo" id="antecedentes_nuevo" >
+              
+              <button type="submit">Actualizar</button>
+            </form>
+          </dialog>
+        
     <script src="../static/js/sideBar.js"></script>
+    <script src="../static/js/modalEditarPaciente.js"></script>
 </body>
 </html>

@@ -405,6 +405,11 @@ body.dark .tabla_medicos i:hover {
 
 tr { 
     text-align: center;
+    padding: 15px;
+}
+
+th {
+    padding: 15px;
 }
 
 tr td {
@@ -426,6 +431,7 @@ tr td {
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 5px;
 }
+
 #modal {
     margin: 0 auto;
     margin-top: 155px;
@@ -434,6 +440,20 @@ tr td {
     overflow-x: hidden;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 5px;
+}
+body.dark #modal {
+    background-color: #262626;
+    color: white;
+}
+
+body.dark #modal form button {
+    background-color: #695CFE;
+    color: white;
+}
+
+body.dark #modal form button:hover {
+    background-color: #4a3dd8;
+    cursor: pointer;
 }
 
 
@@ -474,9 +494,14 @@ tr td {
     padding: 0 10px;
     font-size: 16px;
     font-weight: 500;
-    color: var(--text-color);
+    color: black;
     transition: var(--tran-05);
 }
+
+body.dark .input-group input, .input-group select {
+    color: rgba(19, 18, 18, 0.938);
+}
+
 
 #modal form button,
 #modalEditarDoctor form button {
@@ -525,3 +550,18 @@ tr td {
 #btnAbrirModalEditarDoctor i {
     cursor: pointer;
 }
+
+#fecha_nacimiento_nueva {
+    width: 38%;
+    text-align: center;
+}
+
+.tabla_medicos a.editar {
+    cursor: pointer;
+}
+
+#sintoma {
+    font-size: 17px;
+    padding: 10px;
+}
+

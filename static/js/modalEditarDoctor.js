@@ -1,4 +1,3 @@
-// seleccionar todos los elementos con la clase "editar" y guardarlo en una const variable llamada "botonesEditar"
 const botonesEditar = document.querySelectorAll('.editar');
 const btnCerrarModalMedico = document.querySelector('#btnCerrarModalMedico');
 const modalEditarDoctor = document.querySelector('#modalEditarDoctor');

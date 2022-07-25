@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+  <!-- Coding by CodingLab | www.codinglabweb.com -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/3d529fade9.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../static/css/admins.css">
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <title>Exploración y Diagnóstico</title>
+    <link rel="shortcut icon" href="../static/img/icon_43d242a8c7d8a646896a7e71627d7247.ico" type="image/x-icon">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+    <style>
+        .formulario {
+            /* width: 700px; */
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 200px;
+            width: 100%;
+        }
+        .formularios {
+            text-align: center;
+            padding: 15px;
+        }
+        .formulario .input-group {
+            padding: 20px;
+        }
+
+        .input-group label {
+            font-size: 20px;
+        }
+        .boton-registro {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .input-group button {
+            background-color: #695CFE;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            font-size: 23px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 50%;
+        }
+        .input-group button :hover {
+            background-color: #5a4fd8;
+        }
+
+        .form-diagnostico textarea {
+            resize: none;
+            width: 400px;
+            height: 130px;
+        }
+        .botones .input-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+        }
+        .botones .input-group button:hover {
+            background-color: #564adf;
+        }
+
+        .tabla-seleccionar-paciente {
+            width: 70%;
+            margin: 0 auto;
+        }
+        .signos {
+        width: 290px;
+        /* margin: 0 auto; */
+        /* display: flex; */
+        /* justify-content: center; */
+        /* align-items: center; */
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+        /* align-items: self-start; */
+        }
+        .signos .input-group input {
+            width: 90px;
+        }
+        input#nombre_doctor,
+        input#rfc_doctor {
+            background-color: #E4E9F7;
+            border: none;
+            color: #707070;
+            font-size: 30px;
+            width: 530px;
+            font-weight: 500;
+            transition: var(--tran-05)
+        }
+        input#nombre_doctor,
+        input#rfc_doctor:focus {
+            outline: none;
+        }
+        body.dark input#nombre_doctor,
+        body.dark input#rfc_doctor {
+            background-color: #18191a;
+            color: #ccc;
+            transition: var(--tran-05)
+            
+        }
+
+    </style>
+</head>
+<body>
+  <!-- ver los mensajes flash flask -->
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  {% for message in messages %}
+    <script>
+    Toastify({
+      text: "{{ message }}",
+      className: "info",
+      duration: 2000,
+      gravity: "top",
+      position: "center",
+      style: {
+        background: "linear-gradient(to right, #3378FF, #9442FE)",
+        color: "#fff",
+        fontSize: "1.2rem",
+        textAlign: "center",
+        borderRadius: "0.5rem"
+      }
+    }).showToast();
+    </script>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+    <nav class="sidebar">
+        <header>
+            <div class="image-text">
+                <span class="image">
+                      <img src="../static/img/Logo.png" alt="">
+                </span>
+
+                <div class="text logo-text">
+                    <span class="name">MedicalUPQ</span>
+                    <span class="profession">Centro Médico</span>
+                </div>
+            </div>
+
+            <i class='bx bx-chevron-right toggle'></i>
+        </header>
+
+        <div class="menu-bar">
+            <div class="menu">
+
+                <li class="search-box">
+                    <i class="fa-solid fa-magnifying-glass icon"></i>
+                    <input type="text" placeholder="Buscar...">
+                </li>
+                
+                <ul class="menu-links">
+
+                  <li class="nav-link">
+                    <a href="/admins">
+                        <i class="fa-solid fa-address-card icon"></i>
+                        <span class="text nav-text">Administración</span>
+                    </a>
+                  </li>
+                  <li class="nav-link">
+                    <a href="/pacientes">
+                        <i class="fa-solid fa-folder-plus icon"></i>
+                        <span class="text nav-text">Gen. Expediente</span>
+                    </a>
+                  </li>
+
+                  <li class="nav-link">
+                    <a href="/ver_pacientes">
+                        <i class="fa-solid fa-users-viewfinder icon"></i>
+                        <span class="text nav-text">Consultar Mis<br> Pacientes</span>
+                    </a>
+                  </li>
+
+                    <li class="nav-link">
+                        <a href="#">
+                            <i class="fa-solid fa-stethoscope icon"></i>
+                            <span class="text nav-text">Exploración y <br>Diagnóstico</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-link">
+                        <a href="#">
+                            <i class="fa-solid fa-book-medical icon"></i>
+                            <span class="text nav-text">Consultar Citas</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bottom-content">
+                <li class="">
+                    <a href="/logout">
+                        <i class='bx bx-log-out icon' ></i>
+                        <span class="text nav-text">Cerrar Sesión</span>
+                    </a>
+                </li>
+
+                <li class="mode">
+                    <div class="sun-moon">
+                        <i class='bx bx-moon icon moon'></i>
+                        <i class='bx bx-sun icon sun'></i>
+                    </div>
+                    <span class="mode-text text">Dark mode</span>
+
+                    <div class="toggle-switch">
+                        <span class="switch"></span>
+                    </div>
+                </li>
+            </div>
+        </div>
+    </nav>
+
+    <section class="home">
+        <div class="nombre">
+          <div class="text">
+             <input type="text" id="nombre_doctor" value="{{nombre}}" readonly >
+             <br>
+             <input type="text" id="rfc_doctor" value="{{rfc}}" readonly>
+          </div>
+          <i class="fa-solid fa-monitor-waveform icon"></i>
+        </div>
+        <center><h2 id="titulo">Exploración y Diagnóstico</h2></center>
+        
+        <div class="formularios">
+            <form action="/guardar_cita" class="formulario" method="POST">
+                <div class="form-exploracion">
+                    <h2>Exploración</h2>
+                        <div class="input-group">
+                            <label for="fecha">Nombre Completo</label>
+                            <input type="text" name="nombre_paciente" id="nombre_paciente" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="fecha">Fecha y Hora Actual</label>
+                            <input type="datetime-local" name="fecha_hora" id="fecha_hora" required>
+                        </div>
+                        <div class="signos">
+                            <div class="input-group">
+                                <label for="peso">Peso</label>
+                                <input type="number" name="peso" id="peso" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="latidos">Edad</label>
+                                <input type="number" name="edad" id="edad" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="altura">Altura</label>
+                                <input type="number" name="altura" id="altura" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="temperatura">Temp</label>
+                                <input type="number" name="temperatura" id="temperatura" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="latidos">LPM</label>
+                                <input type="number" name="latidos" id="latidos" required>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="latidos">Saturación</label>
+                                <input type="number" name="saturacion" id="saturacion" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="latidos">Glucosa</label>
+                                <input type="number" name="glucosa" id="glucosa" required>
+                            </div>
+                        </div>
+                </div>
+
+                <div class="form-diagnostico">
+                    <h2>Diagnóstico</h2>
+                    <div class="input-group">
+                        <div>
+                            <label for="sintomas">Sintomas</label>
+                        </div>
+                        <textarea name="sintomas" id="sintomas" cols="30" rows="10"></textarea>
+                    </div>
+                    <div class="tratamiento">
+                        <div class="input-group">
+                            <label for="medicamentos">Medicamentos</label>
+                            <input type="text" name="medicamentos" id="medicamentos" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="indicaciones">Indicaciones</label>
+                            <input type="text" name="indicaciones" id="indicaciones" required>
+                        </div>
+                        <button class="btn btn-primary" id="guardar">Guardar</button>
+
+                    </div>
+                </div>
+            </form>
+            <div class="botones">
+                <div class="input-group">
+                    <button class="btn btn-primary" id="cancelar">Receta</button>
+                    <button class="btn btn-primary" id="cancelar">Estudios</button>
+                    <button id="probando">probando</button>
+                </div>
+            </div>
+        </div>
+
+    <script src="../static/js/sideBar.js"></script>
+    <script src="../static/js/generarReceta.js"></script>
+</body>
+</html>

@@ -47,7 +47,6 @@ def admins():
         data = cur.fetchall()
         return render_template('admin/admins.html', doctores=data, nombre=nombre, rfc=rfc)
 
-
 @app.route('/doctores')
 def doctores():
     return render_template('doctor.html')
@@ -68,6 +67,41 @@ def pacientes():
         data = cur.fetchall()
         return render_template('pacientes.html', doctores=data, nombre=nombre, rfc=rfc)
 
+@app.route('/ver_pacientes')
+def verPacientes():
+    if 'rfc' in session:
+        # obtener el nombre y pasarlo al template
+        rfc = session['rfc']
+        # obtener el id del doctor de la sesion
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT id_doctor FROM tb_doctores WHERE RFC = %s', (rfc,))
+        id_doctor = cursor.fetchone()
+        # sql para obtener el nombre del doctor donde el RFC = nombre
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT Nombre FROM tb_doctores WHERE RFC = %s', (rfc,))
+        nombre = cursor.fetchone()
+        nombre = nombre[0]
+        # consultar la base de datos
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM tb_expedientes WHERE id_doctor = %s', (id_doctor[0],))
+        data = cur.fetchall()
+        return render_template('verPacientes.html', expedientes=data, nombre=nombre, rfc=rfc)
+
+@app.route('/exploracion_diagnostico')
+def exploracion_diagnostico():
+    if 'rfc' in session:
+        # obtener el nombre y pasarlo al template
+        rfc = session['rfc']
+        # obtener el id del doctor de la sesion
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT id_doctor FROM tb_doctores WHERE RFC = %s', (rfc,))
+        id_doctor = cursor.fetchone()
+        # sql para obtener el nombre del doctor donde el RFC = nombre
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT Nombre FROM tb_doctores WHERE RFC = %s', (rfc,))
+        nombre = cursor.fetchone()
+        nombre = nombre[0]
+        return render_template('exploracionDiagnostico.html',  nombre=nombre, rfc=rfc)
 # Un "middleware" que se ejecuta antes de responder a cualquier ruta. Aquí verificamos si el usuario ha iniciado sesión
 @app.before_request
 def verificarSesion():
@@ -130,8 +164,12 @@ def login():
                 else:
                     flash("Contraseña incorrecta")
                     return render_template('index.html')
+        else:
+            flash("Usuario no encontrado")
+            return redirect(url_for('index'))
     else:
-        return redirect(url_for('index'))
+        flash("si entra aqui me doy un tiro")
+        return render_template('index.html')
     
 
 @app.route('/registrar_medico', methods=['GET', 'POST'])
@@ -207,6 +245,7 @@ def editar_medico():
     else: 
         return redirect(url_for('admins'))
 
+
 @app.route('/registrar_paciente', methods=['GET', 'POST'])
 def registrar_paciente():
     if request.method == 'POST':
@@ -231,6 +270,70 @@ def registrar_paciente():
         mysql.connection.commit()
         flash('El paciente ha sido registrado con exito!')
         return redirect(url_for('pacientes'))
+    
+@app.route('/editar_paciente', methods=['GET', 'POST'])
+def editar_paciente():
+    #obtener los valores del formulario
+    nombre_paciente = request.form['nombre_nuevo']
+    fecha_nacimiento_paciente = request.form['fecha_nacimiento_nuevo']
+    enfermedades = request.form['enfermedades_nuevo']
+    alergias = request.form['alergias_nuevo']
+    antecedentes = request.form['antecedentes_nuevo']
+    id_paciente = request.form['id_paciente']
+    # obtener el id del doctor en sesion
+    cursor = mysql.connection.cursor()
+    cursor.execute('SELECT id_doctor FROM tb_doctores WHERE RFC = %s', [session['rfc']])
+    # guardar el id del doctor en una variable
+    id_doctor = cursor.fetchone()
+    # crear una consulta para actualizar los datos
+    cursor = mysql.connection.cursor()
+    cursor.execute('UPDATE tb_expedientes SET id_doctor = %s, Nombre = %s, Fecha_Nacimiento = %s, Enfermedades = %s, Alergias = %s, Antecedentes = %s WHERE id_expediente = %s', (id_doctor[0], nombre_paciente, fecha_nacimiento_paciente, enfermedades, alergias, antecedentes, id_paciente))
+
+    # guardar los cambios
+    mysql.connection.commit()
+    flash('El paciente ha sido editado con exito!')
+    return redirect(url_for('verPacientes'))
+
+@app.route('/guardar_cita', methods=['GET', 'POST'])
+def guardar_cita():
+    if request.method == 'POST':
+        
+        nombre_paciente = request.form['nombre_paciente']
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT id_expediente FROM tb_expedientes WHERE Nombre = %s', [nombre_paciente])
+        # guardar el id del paciente en una variable
+        id_expediente = cursor.fetchone()
+
+        # obtener el id del doctor en sesion
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT id_doctor FROM tb_doctores WHERE RFC = %s', [session['rfc']])
+        # guardar el id del doctor en una variable
+        id_doctor = cursor.fetchone()
+        
+        # obtener los datos del formulario
+        fecha = request.form['fecha_hora']
+        peso = request.form['peso']
+        altura = request.form['altura']
+        temperatura = request.form['temperatura']
+        latidos = request.form['latidos']
+        saturacion = request.form['saturacion']
+        glucosa = request.form['glucosa']
+        edad = request.form['edad']
+        sintomas = request.form['sintomas']
+        tratamiento = request.form['medicamentos']
+        indicaciones = request.form['indicaciones']
+
+        # guardar los datos en la tabla tb_citas
+        cursor = mysql.connection.cursor()
+        cursor.execute('INSERT INTO tb_citas (id_expediente, id_doctor, Fecha, Peso, Altura, Temperatura, Latidos, Saturacion_oxigeno, Glucosa, Edad, Sintomas, Tratamiento, Indicaciones) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', (id_expediente[0], id_doctor[0], fecha, peso, altura, temperatura, latidos, saturacion, glucosa, edad, sintomas, tratamiento, indicaciones))
+
+        # guardar los cambios
+        mysql.connection.commit()
+        flash('Datos guardados con exito!')
+        return redirect(url_for('exploracion_diagnostico'))
+    else:
+        print('no se pudo guardar')
+        return redirect(url_for('exploracion_diagnostico'))
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -240,7 +343,7 @@ def logout():
    flash("Sesión cerrada")
    return redirect(url_for('index'))
 
-    
+
 # iniciar servidor
 if __name__ == '__main__':
     app.run(port = 3000, debug = True)
