@@ -10,7 +10,7 @@
 :root{
     /* ===== Colors ===== */
     --body-color: #E4E9F7;
-    --sidebar-color: rgb(7, 7, 7);
+    --sidebar-color: #fff;
     --primary-color: #695CFE;
     --primary-color-light: #F6F5FF;
     --toggle-color: #DDD;
@@ -59,7 +59,6 @@ body.dark{
     width: 88px;
 }
 
-/* ===== Reusable code - Here ===== */
 .sidebar li{
     height: 50px;
     list-style: none;
@@ -99,7 +98,6 @@ body.dark{
 .sidebar.close .text{
     opacity: 0;
 }
-/* =========================== */
 
 .sidebar header{
     position: relative;
@@ -565,3 +563,7 @@ body.dark .input-group input, .input-group select {
     padding: 10px;
 }
 
+.form-exploracion {
+    width: 600px;
+    
+}

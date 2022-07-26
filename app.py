@@ -94,14 +94,24 @@ def exploracion_diagnostico():
         rfc = session['rfc']
         # obtener el id del doctor de la sesion
         cursor = mysql.connection.cursor()
-        cursor.execute('SELECT id_doctor FROM tb_doctores WHERE RFC = %s', (rfc,))
-        id_doctor = cursor.fetchone()
+        cursor.execute('SELECT Cedula FROM tb_doctores WHERE RFC = %s', (rfc,))
+        cedula = cursor.fetchone()
         # sql para obtener el nombre del doctor donde el RFC = nombre
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT Nombre FROM tb_doctores WHERE RFC = %s', (rfc,))
         nombre = cursor.fetchone()
         nombre = nombre[0]
-        return render_template('exploracionDiagnostico.html',  nombre=nombre, rfc=rfc)
+        # seleccionar id del doctor
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT id_doctor FROM tb_doctores WHERE RFC = %s', (rfc,))
+        id_doctor = cursor.fetchone()
+
+        # consultar todos los pacientes del doctor en session y mandarlos al template
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM tb_expedientes WHERE id_doctor = %s', (id_doctor[0],))
+        data = cur.fetchall()
+
+        return render_template('exploracionDiagnostico.html',  nombre=nombre, rfc=rfc, cedula = cedula[0], pacientes = data)
 # Un "middleware" que se ejecuta antes de responder a cualquier ruta. Aquí verificamos si el usuario ha iniciado sesión
 @app.before_request
 def verificarSesion():
@@ -335,6 +345,9 @@ def guardar_cita():
         print('no se pudo guardar')
         return redirect(url_for('exploracion_diagnostico'))
 
+@app.route('/receta')
+def receta():
+    return render_template('receta.html')
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():

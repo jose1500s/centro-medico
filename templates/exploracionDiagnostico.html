@@ -13,101 +13,9 @@
     <title>Exploración y Diagnóstico</title>
     <link rel="shortcut icon" href="../static/img/icon_43d242a8c7d8a646896a7e71627d7247.ico" type="image/x-icon">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
-    <style>
-        .formulario {
-            /* width: 700px; */
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 200px;
-            width: 100%;
-        }
-        .formularios {
-            text-align: center;
-            padding: 15px;
-        }
-        .formulario .input-group {
-            padding: 20px;
-        }
+    <link rel="stylesheet" href="../static/css/receta.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-        .input-group label {
-            font-size: 20px;
-        }
-        .boton-registro {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .input-group button {
-            background-color: #695CFE;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            font-size: 23px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 50%;
-        }
-        .input-group button :hover {
-            background-color: #5a4fd8;
-        }
-
-        .form-diagnostico textarea {
-            resize: none;
-            width: 400px;
-            height: 130px;
-        }
-        .botones .input-group {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 25px;
-        }
-        .botones .input-group button:hover {
-            background-color: #564adf;
-        }
-
-        .tabla-seleccionar-paciente {
-            width: 70%;
-            margin: 0 auto;
-        }
-        .signos {
-        width: 290px;
-        /* margin: 0 auto; */
-        /* display: flex; */
-        /* justify-content: center; */
-        /* align-items: center; */
-        display: grid;
-        grid-template-columns: repeat(4,1fr);
-        /* align-items: self-start; */
-        }
-        .signos .input-group input {
-            width: 90px;
-        }
-        input#nombre_doctor,
-        input#rfc_doctor {
-            background-color: #E4E9F7;
-            border: none;
-            color: #707070;
-            font-size: 30px;
-            width: 530px;
-            font-weight: 500;
-            transition: var(--tran-05)
-        }
-        input#nombre_doctor,
-        input#rfc_doctor:focus {
-            outline: none;
-        }
-        body.dark input#nombre_doctor,
-        body.dark input#rfc_doctor {
-            background-color: #18191a;
-            color: #ccc;
-            transition: var(--tran-05)
-            
-        }
-
-    </style>
 </head>
 <body>
   <!-- ver los mensajes flash flask -->
@@ -234,8 +142,15 @@
                 <div class="form-exploracion">
                     <h2>Exploración</h2>
                         <div class="input-group">
-                            <label for="fecha">Nombre Completo</label>
-                            <input type="text" name="nombre_paciente" id="nombre_paciente" required>
+                            <label for="fecha">Nombre Completo del paciente</label>
+                            <!-- select coin los nombres de los pacientes registrados -->
+                            <input type="text" id="listaPacientes" list="pacientes">
+                            datalist de los pacientes registrados
+                            <datalist id="pacientes">
+                                {% for paciente in pacientes %}
+                                    <option value="{{paciente.2}}">
+                                {% endfor %}
+                            </datalist>
                         </div>
                         <div class="input-group">
                             <label for="fecha">Fecha y Hora Actual</label>
@@ -292,18 +207,72 @@
                             <input type="text" name="indicaciones" id="indicaciones" required>
                         </div>
                         <button class="btn btn-primary" id="guardar">Guardar</button>
-
                     </div>
                 </div>
             </form>
             <div class="botones">
                 <div class="input-group">
-                    <button class="btn btn-primary" id="cancelar">Receta</button>
-                    <button class="btn btn-primary" id="cancelar">Estudios</button>
-                    <button id="probando">probando</button>
+                    <button  class="btn btn-primary" id="btn_generar_receta">Receta</button>
+                    <button class="btn btn-primary" id="guardar">Guardar</button>
                 </div>
             </div>
         </div>
+
+        <dialog id="modalReceta"> 
+        <div id="desdeaqui">
+            <div class="encabezado">
+                <div class="imagen1">
+                    <img src="../static/img/logo_medicos.png" alt="">
+                </div>
+                <div class="info-medio">
+                    <h2>Receta Médica</h2>
+                    <p>Dr. {{nombre}}</p>
+                    <hr>
+                    <p>Cedula Profesional {{cedula}}</p>
+                    <hr>
+                </div>
+                <div class="imagen2">
+                    <img src="../static/img/logo_medicos.png" alt="">
+                </div>
+            </div>
+            <div class="fecha">
+                <input type="text" id="fechaReceta" readonly>
+            </div>
+            <div class="contenedorReceta">
+                <div class="nombre-paciente">
+                    <div>
+                        <p>Nombre del Paciente: <input type="text" id="nombrePaciente" readonly></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="info">
+                    <p>Peso: <input type="text" id="pesoPaciente" readonly></p>
+                    <p>Edad: <input type="text" id="edadPaciente" readonly></p>
+                    <p>Altura: <input type="text" id="alturaPaciente" readonly></p>
+                    <p>Temperatura: <input type="text" id="temperaturaPaciente" readonly></p>
+                    <p>LPM: <input type="text" id="lpmPaciente" readonly></p>
+                    <p>Saturación: <input type="text" id="saturacionPaciente" readonly></p>
+                    <p>Glucosa: <input type="text" id="glucosaPaciente" readonly></p>
+                </div>
+                <hr>
+                <div class="sintomas">
+                    <textarea name="" id="sintomasPaciente" cols="30" rows="10"></textarea>
+                </div>
+                <hr>
+                <div class="tratamiento1">
+                    <div class="medicamentos">
+                        <p>Medicamentos: <input type="text" id="medicamentosPaciente1" readonly></p>
+                    </div>
+                    <div class="indicaciones">
+                        <p>Indicaciones: <input type="text" id="indicacionesPaciente1" readonly></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="botonImprimir">
+            <button id="btnImprimirReceta">Imprimir Receta</button>
+        </div>
+        </dialog>
 
     <script src="../static/js/sideBar.js"></script>
     <script src="../static/js/generarReceta.js"></script>

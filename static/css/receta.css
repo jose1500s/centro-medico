@@ -1,11 +1,209 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.formulario {
+    /* width: 700px; */
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 200px;
+    width: 100%;
+}
+.formularios {
+    text-align: center;
+    padding: 15px;
+}
+.formulario .input-group {
+    padding: 20px;
 }
 
-.cabecera {
+.input-group label {
+    font-size: 20px;
+}
+.boton-registro {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+}
+.input-group button {
+    background-color: #695CFE;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    font-size: 23px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 50%;
+}
+.input-group button :hover {
+    background-color: #5a4fd8;
+}
+
+.form-diagnostico textarea {
+    resize: none;
+    width: 400px;
+    height: 130px;
+    font-size: 18px;
+    padding: 10px;
+}
+.botones .input-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}
+.botones .input-group button:hover {
+    background-color: #564adf;
+}
+
+.tabla-seleccionar-paciente {
+    width: 70%;
+    margin: 0 auto;
+}
+.signos {
+width: 290px;
+/* margin: 0 auto; */
+/* display: flex; */
+/* justify-content: center; */
+/* align-items: center; */
+display: grid;
+grid-template-columns: repeat(4,1fr);
+/* align-items: self-start; */
+}
+.signos .input-group input {
+    width: 90px;
+}
+input#nombre_doctor,
+input#rfc_doctor {
+    background-color: #E4E9F7;
+    border: none;
+    color: #707070;
+    font-size: 30px;
+    width: 530px;
+    font-weight: 500;
+    transition: var(--tran-05)
+}
+input#nombre_doctor,
+input#rfc_doctor:focus {
+    outline: none;
+}
+body.dark input#nombre_doctor,
+body.dark input#rfc_doctor {
+    background-color: #18191a;
+    color: #ccc;
+    transition: var(--tran-05)  
+}
+
+#modalReceta {
+    margin: 0 auto;
+    margin-top: 60px;
+}
+.encabezado {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.imagen1 img,
+.imagen2 img {
+    width: 100px;
+    height: 120px;
+    padding: 10px;
+}
+.contenedorReceta {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 2px solid #ccc;
+    font-size: 18px;
+    width: 800px;
+    margin-top: 0;
+}
+.contenedorReceta p {
+    font-weight: bold;
+}
+.contenedorReceta p input {
+    border: none;
+    font-size: 16px;
+}
+.contenedorReceta p input:focus {
+    outline: none;
+}
+.contenedorReceta hr {
+    width: 100%;
+    border: 1px solid #ccc;
+}
+
+.info {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    padding: 10px;
+}
+
+.info p input {
+    width: 90px;
+}
+
+.nombre-paciente {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+}
+.sintomas {
+    width: 100%;
+    height: 250x;
+}
+.sintomas textarea {
+    resize: none;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    font-size: 18px;
+}
+
+.fecha {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.fecha input {
+    border:  none;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    width: 186px;
+    margin-bottom: 2px;
+}
+
+.fecha input:focus {
+    outline: none;
+}
+
+.tratamiento1 {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+}
+.botonImprimir {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+}
+#btnImprimirReceta {
+    background-color: #695CFE;
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 30%;
+    padding: 10px;
+}
+#btnImprimirReceta:hover {
+    background-color: #5145d3;
 }
