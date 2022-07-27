@@ -29,7 +29,6 @@ function mostarDatos() {
 btn_generar_receta.addEventListener('click', () => {
     // verificar que no haya nulls en los inputs
     if (inputNombrePaciente.value == "" || nombreDoctor.value == "" || rfc_doctor.value == "" || fecha_hora.value == "" || peso.value == "" || edad.value == "" || altura.value == "" || temperatura.value == "" || latidos.value == "" || saturacion.value == "" || glucosa.value == "" || sintomas.value == "" || medicamentos.value == "" || indicaciones.value == "") {
-        // alerta con toastify
         Toastify({
             text: "Complete todos los campos",
             className: "info",

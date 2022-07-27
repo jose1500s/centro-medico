@@ -567,3 +567,27 @@ body.dark .input-group input, .input-group select {
     width: 600px;
     
 }
+button#btn_generar_receta {
+    width: 250px;
+}
+
+#guardar {
+    height: 40px;
+    width: 200px;
+    cursor: pointer;
+    border-radius: 6px;
+    border: 1px solid var(--primary-color);
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    transition: var(--tran-05);
+    margin-top: 20px;
+}
+
+#labelHora {
+    font-size: 25px;
+    padding: 10px;
+    color: var(--text-color);
+    text-align: center;
+}

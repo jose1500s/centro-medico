@@ -2,8 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_mysqldb import MySQL
 from passlib.context import CryptContext
 
-
-
 app = Flask(__name__)
 
 # conexion con la base de datos
@@ -112,6 +110,46 @@ def exploracion_diagnostico():
         data = cur.fetchall()
 
         return render_template('exploracionDiagnostico.html',  nombre=nombre, rfc=rfc, cedula = cedula[0], pacientes = data)
+
+@app.route('/consultar_citas')
+def consultar_citas():
+   if 'rfc' in session:
+        # obtener el nombre y pasarlo al template
+        rfc = session['rfc']
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT Nombre FROM tb_doctores WHERE RFC = %s', (rfc,))
+        nombre = cursor.fetchone()
+        nombre = nombre[0]
+
+        return render_template('verCitas.html',  nombre=nombre, rfc=rfc)
+
+@app.route('/filtrar_cita', methods=['POST'])
+def filtrar_cita():
+    if request.method == 'POST':
+        # Obtener del formulario el nombre del paciente y fecha de la cita para buscarlo en la base de datos
+        nombre_paciente = request.form['nombre_paciente']
+        fecha_cita = request.form['fecha_cita']
+
+        
+        
+        # obtener el id_expediente del paciente
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT id_expediente FROM tb_expedientes WHERE Nombre = %s', (nombre_paciente,))
+        id_expediente = cursor.fetchone()
+
+        # consultar las citas donde el id_expediente = id_expediente OR la fecha_cita = Fecha de la tb_cita
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM tb_citas WHERE Fecha = %s OR id_expediente = %s', (fecha_cita, id_expediente))
+        data = cur.fetchall()
+
+        flash('Citas encontradas')
+        return render_template('verCitas.html', citas=data)
+        
+    else:
+        flash('No se pudo filtrar la cita')
+        return redirect(url_for('consultar_citas'))
+
+
 # Un "middleware" que se ejecuta antes de responder a cualquier ruta. Aquí verificamos si el usuario ha iniciado sesión
 @app.before_request
 def verificarSesion():
@@ -308,7 +346,7 @@ def editar_paciente():
 def guardar_cita():
     if request.method == 'POST':
         
-        nombre_paciente = request.form['nombre_paciente']
+        nombre_paciente = request.form['listaPacientes']
         cursor = mysql.connection.cursor()
         cursor.execute('SELECT id_expediente FROM tb_expedientes WHERE Nombre = %s', [nombre_paciente])
         # guardar el id del paciente en una variable
@@ -333,14 +371,23 @@ def guardar_cita():
         tratamiento = request.form['medicamentos']
         indicaciones = request.form['indicaciones']
 
-        # guardar los datos en la tabla tb_citas
+        # verificar si el nombre del paciente existe en la base de datos y esta relacionado al doctor en sesion
         cursor = mysql.connection.cursor()
-        cursor.execute('INSERT INTO tb_citas (id_expediente, id_doctor, Fecha, Peso, Altura, Temperatura, Latidos, Saturacion_oxigeno, Glucosa, Edad, Sintomas, Tratamiento, Indicaciones) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', (id_expediente[0], id_doctor[0], fecha, peso, altura, temperatura, latidos, saturacion, glucosa, edad, sintomas, tratamiento, indicaciones))
+        cursor.execute('SELECT id_expediente FROM tb_expedientes WHERE Nombre = %s AND id_doctor = %s', (nombre_paciente, id_doctor[0]))
 
-        # guardar los cambios
-        mysql.connection.commit()
-        flash('Datos guardados con exito!')
-        return redirect(url_for('exploracion_diagnostico'))
+        # si existe el paciente y esta relacionado al doctor en sesion seguir con el proceso de guardar la cita
+        if cursor.fetchone():
+            # guardar los datos en la tabla tb_citas
+            cursor = mysql.connection.cursor()
+            cursor.execute('INSERT INTO tb_citas (id_expediente, id_doctor, Fecha, Peso, Altura, Temperatura, Latidos, Saturacion_oxigeno, Glucosa, Edad, Sintomas, Tratamiento, Indicaciones) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', (id_expediente[0], id_doctor[0], fecha, peso, altura, temperatura, latidos, saturacion, glucosa, edad, sintomas, tratamiento, indicaciones))
+
+            # guardar los cambios
+            mysql.connection.commit()
+            flash('Datos guardados con exito!')
+            return redirect(url_for('exploracion_diagnostico'))
+        else:
+            flash('El paciente no existe o no esta relacionado al doctor en sesion!')
+            return redirect(url_for('exploracion_diagnostico'))
     else:
         print('no se pudo guardar')
         return redirect(url_for('exploracion_diagnostico'))

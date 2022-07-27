@@ -88,14 +88,14 @@
                   </li>
 
                     <li class="nav-link">
-                        <a href="#">
+                        <a href="/exploracion_diagnostico">
                             <i class="fa-solid fa-stethoscope icon"></i>
                             <span class="text nav-text">Exploración y <br>Diagnóstico</span>
                         </a>
                     </li>
 
                     <li class="nav-link">
-                        <a href="#">
+                        <a href="/consultar_citas">
                             <i class="fa-solid fa-book-medical icon"></i>
                             <span class="text nav-text">Consultar Citas</span>
                         </a>
@@ -144,8 +144,8 @@
                         <div class="input-group">
                             <label for="fecha">Nombre Completo del paciente</label>
                             <!-- select coin los nombres de los pacientes registrados -->
-                            <input type="text" id="listaPacientes" list="pacientes">
-                            datalist de los pacientes registrados
+                            <input type="text" name="listaPacientes" id="listaPacientes" list="pacientes">
+                            
                             <datalist id="pacientes">
                                 {% for paciente in pacientes %}
                                     <option value="{{paciente.2}}">
@@ -153,8 +153,8 @@
                             </datalist>
                         </div>
                         <div class="input-group">
-                            <label for="fecha">Fecha y Hora Actual</label>
-                            <input type="datetime-local" name="fecha_hora" id="fecha_hora" required>
+                            <label for="fecha">Fecha</label>
+                            <input type="date" name="fecha_hora" id="fecha_hora" required>
                         </div>
                         <div class="signos">
                             <div class="input-group">
@@ -212,8 +212,7 @@
             </form>
             <div class="botones">
                 <div class="input-group">
-                    <button  class="btn btn-primary" id="btn_generar_receta">Receta</button>
-                    <button class="btn btn-primary" id="guardar">Guardar</button>
+                    <button  class="btn btn-primary" id="btn_generar_receta">Generar Receta</button>
                 </div>
             </div>
         </div>
