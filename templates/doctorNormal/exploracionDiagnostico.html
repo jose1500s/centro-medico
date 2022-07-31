@@ -66,36 +66,29 @@
                 </li>
                 
                 <ul class="menu-links">
-
                   <li class="nav-link">
-                    <a href="/admins">
-                        <i class="fa-solid fa-address-card icon"></i>
-                        <span class="text nav-text">Administración</span>
-                    </a>
-                  </li>
-                  <li class="nav-link">
-                    <a href="/pacientes">
+                    <a href="{{ url_for('second.doctorPacientes') }}">
                         <i class="fa-solid fa-folder-plus icon"></i>
                         <span class="text nav-text">Gen. Expediente</span>
                     </a>
                   </li>
 
                   <li class="nav-link">
-                    <a href="/ver_pacientes">
+                    <a href="{{ url_for('second.verMisPacientes') }}">
                         <i class="fa-solid fa-users-viewfinder icon"></i>
                         <span class="text nav-text">Consultar Mis<br> Pacientes</span>
                     </a>
                   </li>
 
                     <li class="nav-link">
-                        <a href="/exploracion_diagnostico">
+                        <a href="{{ url_for('second.exploracionDiagnostico') }}">
                             <i class="fa-solid fa-stethoscope icon"></i>
                             <span class="text nav-text">Exploración y <br>Diagnóstico</span>
                         </a>
                     </li>
 
                     <li class="nav-link">
-                        <a href="/consultar_citas">
+                        <a href="{{ url_for('second.consultarCitas') }}">
                             <i class="fa-solid fa-book-medical icon"></i>
                             <span class="text nav-text">Consultar Citas</span>
                         </a>
@@ -138,7 +131,7 @@
         <center><h2 id="titulo">Exploración y Diagnóstico</h2></center>
         
         <div class="formularios">
-            <form action="/guardar_cita" class="formulario" method="POST">
+            <form action="{{ url_for('second.guardarCita')}}" class="formulario" method="POST">
                 <div class="form-exploracion">
                     <h2>Exploración</h2>
                         <div class="input-group">
@@ -163,7 +156,7 @@
                             </div>
                             <div class="input-group">
                                 <label for="latidos">Edad</label>
-                                <input type="number" name="edad" id="edad" required>
+                                <input type="number" name="edad" id="edad" required value="{{edad}}">
                             </div>
                             <div class="input-group">
                                 <label for="altura">Altura</label>
@@ -221,7 +214,7 @@
         <div id="desdeaqui">
             <div class="encabezado">
                 <div class="imagen1">
-                    <img src="../static/img/logo_medicos.png" alt="">
+                    <img src="../../static/img/logo_medicos.png" alt="">
                 </div>
                 <div class="info-medio">
                     <h2>Receta Médica</h2>
@@ -231,7 +224,7 @@
                     <hr>
                 </div>
                 <div class="imagen2">
-                    <img src="../static/img/logo_medicos.png" alt="">
+                    <img src="../../static/img/logo_medicos.png" alt="">
                 </div>
             </div>
             <div class="fecha">

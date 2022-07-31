@@ -584,10 +584,3 @@ button#btn_generar_receta {
     transition: var(--tran-05);
     margin-top: 20px;
 }
-
-#labelHora {
-    font-size: 25px;
-    padding: 10px;
-    color: var(--text-color);
-    text-align: center;
-}

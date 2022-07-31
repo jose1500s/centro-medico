@@ -17,15 +17,6 @@ const indicaciones = document.querySelector('#indicaciones');
 
 const modalReceta = document.querySelector('#modalReceta');
 
-function mostarDatos() {
-   console.log(`Nombre: ${inputNombrePaciente.value} Fecha: ${fecha_hora.value} Peso: ${peso.value} Edad: ${edad.value} Altura: ${altura.value} Temperatura: ${temperatura.value} Latidos: ${latidos.value} Saturacion: ${saturacion.value} Glucosa: ${glucosa.value} Sintomas: ${sintomas.value} Medicamentos: ${medicamentos.value} Indicaciones: ${indicaciones.value}`);
-
-   console.log("nombre doctor: " + nombreDoctor.value);
-   console.log("rfc doctor: " + rfc_doctor.value);
-    
-}
-
-
 btn_generar_receta.addEventListener('click', () => {
     // verificar que no haya nulls en los inputs
     if (inputNombrePaciente.value == "" || nombreDoctor.value == "" || rfc_doctor.value == "" || fecha_hora.value == "" || peso.value == "" || edad.value == "" || altura.value == "" || temperatura.value == "" || latidos.value == "" || saturacion.value == "" || glucosa.value == "" || sintomas.value == "" || medicamentos.value == "" || indicaciones.value == "") {

@@ -94,35 +94,30 @@
                 
                 <ul class="menu-links">
 
+                
                   <li class="nav-link">
-                    <a href="/admins">
-                        <i class="fa-solid fa-address-card icon"></i>
-                        <span class="text nav-text">Administración</span>
-                    </a>
-                  </li>
-                  <li class="nav-link">
-                    <a href="#">
+                    <a href="{{ url_for('second.doctorPacientes') }}">
                         <i class="fa-solid fa-folder-plus icon"></i>
                         <span class="text nav-text">Gen. Expediente</span>
                     </a>
                   </li>
 
                   <li class="nav-link">
-                    <a href="/ver_pacientes">
+                    <a href="{{ url_for('second.verMisPacientes') }}">
                         <i class="fa-solid fa-users-viewfinder icon"></i>
                         <span class="text nav-text">Consultar Mis<br> Pacientes</span>
                     </a>
                   </li>
 
                     <li class="nav-link">
-                        <a href="/exploracion_diagnostico">
+                        <a href="{{ url_for('second.exploracionDiagnostico') }}">
                             <i class="fa-solid fa-stethoscope icon"></i>
                             <span class="text nav-text">Exploración y <br>Diagnóstico</span>
                         </a>
                     </li>
 
                     <li class="nav-link">
-                        <a href="/consultar_citas">
+                        <a href="{{ url_for('second.consultarCitas') }}">
                             <i class="fa-solid fa-book-medical icon"></i>
                             <span class="text nav-text">Consultar Citas</span>
                         </a>
@@ -162,7 +157,7 @@
         <center><h2 id="titulo">Generar Nuevo Expediente</h2></center>
         <center><p style="font-size: 14px;">Se te asignara este paciente en automatico!</p></center>
         <div class="formulario">
-          <form action="/registrar_paciente" method="post">
+          <form action="{{ url_for('second.doctorRegistrarPaciente')}}" method="post">
             <div class="input-group">
               <label for="nombre">Nombre</label>
               <input type="text" name="nombre" id="nombre" required>

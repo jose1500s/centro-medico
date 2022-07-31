@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-  <!-- Coding by CodingLab | www.codinglabweb.com -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <title>Administración</title>
-    <link rel="shortcut icon" href="../static/img/icon_43d242a8c7d8a646896a7e71627d7247.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../../static/img/faviconLOGO.png" type="image/x-icon">
    
 </head>
 <body>
@@ -76,12 +75,23 @@
                     </a>
                   </li>
 
-                  <li class="nav-link">
-                    <a href="/ver_pacientes">
-                        <i class="fa-solid fa-users-viewfinder icon"></i>
-                        <span class="text nav-text">Consultar Mis <br> Pacientes</span>
-                    </a>
-                  </li>
+                  <!-- link consultar citas, si el medico es admin, redireccionar a la ruta /consultar_citas, si es medico normal, redireccionar a la ruta medicoNormal//consultar_citas -->
+                  {% if session.get('rol') == 'admin' %}
+                    <li class="nav-link">
+                      <a href="{{ url_for('consultar_citas') }}">
+                          <i class="fa-solid fa-folder-plus icon"></i>
+                          <span class="text nav-text">Consultar Citas</span>
+                      </a>
+                    </li>
+                  {% else %}
+
+                    <li class="nav-link">
+                      <a href="{{ url_for('second.consultarCitas') }}">
+                          <i class="fa-solid fa-folder-plus icon"></i>
+                          <span class="text nav-text">Consultar Citas</span>
+                      </a>
+                    </li>
+                  {% endif %}
 
                     <li class="nav-link">
                         <a href="/exploracion_diagnostico">
@@ -159,7 +169,7 @@
                 {% endif %}
                 <td>
                   <a class="editar" data-rfc="{{doctor.1}}" data-nombre="{{doctor.2}}" 
-                  data-cedula="{{doctor.3}}" data-correo="{{doctor.4}}"">
+                  data-cedula="{{doctor.3}}" data-correo="{{doctor.4}}">
                     <i class='bx bx-edit icon'></i>
                   </a>
         

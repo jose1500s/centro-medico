@@ -1,8 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_mysqldb import MySQL
 from passlib.context import CryptContext
+from doctor import second
+
 
 app = Flask(__name__)
+app.register_blueprint(second)
 
 # conexion con la base de datos
 app.config['MYSQL_HOST'] = 'localhost'
@@ -45,10 +48,6 @@ def admins():
         data = cur.fetchall()
         return render_template('admin/admins.html', doctores=data, nombre=nombre, rfc=rfc)
 
-@app.route('/doctores')
-def doctores():
-    return render_template('doctor.html')
-
 @app.route('/pacientes')
 def pacientes():
     if 'rfc' in session:
@@ -85,6 +84,7 @@ def verPacientes():
         data = cur.fetchall()
         return render_template('verPacientes.html', expedientes=data, nombre=nombre, rfc=rfc)
 
+
 @app.route('/exploracion_diagnostico')
 def exploracion_diagnostico():
     if 'rfc' in session:
@@ -120,44 +120,94 @@ def consultar_citas():
         cursor.execute('SELECT Nombre FROM tb_doctores WHERE RFC = %s', (rfc,))
         nombre = cursor.fetchone()
         nombre = nombre[0]
-
-        return render_template('verCitas.html',  nombre=nombre, rfc=rfc)
-
-@app.route('/filtrar_cita', methods=['POST'])
-def filtrar_cita():
-    if request.method == 'POST':
-        # Obtener del formulario el nombre del paciente y fecha de la cita para buscarlo en la base de datos
-        nombre_paciente = request.form['nombre_paciente']
-        fecha_cita = request.form['fecha_cita']
-
-        
-        
-        # obtener el id_expediente del paciente
+         # obtener el id_doctor  en sesion
         cursor = mysql.connection.cursor()
-        cursor.execute('SELECT id_expediente FROM tb_expedientes WHERE Nombre = %s', (nombre_paciente,))
-        id_expediente = cursor.fetchone()
+        cursor.execute('SELECT id_doctor FROM tb_doctores WHERE RFC = %s', (session['rfc'],))
+        id_doctor = cursor.fetchone()
+
 
         # consultar las citas donde el id_expediente = id_expediente OR la fecha_cita = Fecha de la tb_cita
         cur = mysql.connection.cursor()
-        cur.execute('SELECT * FROM tb_citas WHERE Fecha = %s OR id_expediente = %s', (fecha_cita, id_expediente))
+        cur.execute('SELECT * FROM tb_citas WHERE id_doctor = %s', (id_doctor[0],))
         data = cur.fetchall()
+        return render_template('verCitas.html',  nombre=nombre, rfc=rfc, citas = data)
 
-        flash('Citas encontradas')
-        return render_template('verCitas.html', citas=data)
-        
+
+@app.route('/filtrar_cita_por_nombre', methods=['POST'])
+def filtrar_cita_por_nombre():
+    if request.method == 'POST':
+        # obtener los datos de la forma
+        nombre = request.form['nombre_paciente']
+
+        # obtener el id_expediente del paciente
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT id_expediente FROM tb_expedientes WHERE Nombre = %s', (nombre,))
+        id_expediente = cursor.fetchone()
+
+        # si no existe el expediente mandar un mensaje
+        if id_expediente is None:
+            flash('No existe el paciente')
+            return redirect(url_for('consultar_citas'))
+        else: 
+            # obtener el id_doctor en sesion
+            cursor = mysql.connection.cursor()
+            cursor.execute('SELECT id_doctor FROM tb_doctores WHERE RFC = %s', (session['rfc'],))
+            id_doctor = cursor.fetchone()
+            rfc = session['rfc']
+            cursor = mysql.connection.cursor()
+            cursor.execute('SELECT Nombre FROM tb_doctores WHERE RFC = %s', (rfc,))
+            nombre = cursor.fetchone()
+            nombreDoctor = nombre[0]
+
+            # consultar las citas donde el id_expediente = id_expediente y id_doctor = id_doctor en la tabla tb_citas
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT * FROM tb_citas WHERE id_expediente = %s AND id_doctor = %s', (id_expediente[0], id_doctor[0]))
+            data = cur.fetchall()
+            # si no hay datos mandar un mensaje
+            if len(data) == 0:
+                flash('Existe el paciente, pero esta registrado con otro doctor, verifique la informacion') 
+                return render_template('verCitas.html',  nombre=nombreDoctor, rfc=rfc, citas = data)
+            else:
+                flash('Citas encontradas')
+                return render_template('verCitas.html',  nombre=nombreDoctor, rfc=rfc, citas = data)
     else:
         flash('No se pudo filtrar la cita')
         return redirect(url_for('consultar_citas'))
 
 
-# Un "middleware" que se ejecuta antes de responder a cualquier ruta. Aquí verificamos si el usuario ha iniciado sesión
+@app.route('/filtrar_cita_por_fecha', methods=['POST'])
+def filtrar_cita_por_fecha():
+    if request.method == 'POST':
+        # obtener los datos de la forma
+        fechaCita = request.form['fecha_cita']
+
+        
+        # obtener el id_doctor en sesion
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT id_doctor FROM tb_doctores WHERE RFC = %s', (session['rfc'],))
+        id_doctor = cursor.fetchone()
+
+        rfc = session['rfc']
+        cursor = mysql.connection.cursor()
+        cursor.execute('SELECT Nombre FROM tb_doctores WHERE RFC = %s', (rfc,))
+        nombreDr = cursor.fetchone()
+        nombreDoctor = nombreDr[0]
+
+        # consultar las citas donde la Fecha = fecha_cita y id_doctor = id_doctor en la tabla tb_citas
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT * FROM tb_citas WHERE Fecha = %s AND id_doctor = %s', (fechaCita, id_doctor[0]))
+        data = cur.fetchall()
+        return render_template('citasFiltradasFecha.html',  nombre=nombreDoctor, rfc=rfc, citas = data)
+
+#Un "middleware" que se ejecuta antes de responder a cualquier ruta. Aquí verificamos si el usuario ha iniciado sesión
 @app.before_request
 def verificarSesion():
-    ruta = request.path
-    # Si no ha iniciado sesión y no quiere ir a algo relacionado al login, lo redireccionamos al login
-    if not 'rfc' in session and ruta != "/login" and ruta != "/" and ruta != "/index" and not ruta.startswith("/static"):
+     ruta = request.path
+     # Si no ha iniciado sesión y quiere ir a algo no relacionado al login, lo redireccionamos al login
+     if not 'rfc' in session and ruta != "/login" and ruta != "/" and ruta != "/index" and not ruta.startswith("/static"):
         flash("Inicia sesión para continuar")
         return render_template('index.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -178,7 +228,6 @@ def login():
         # obtener el rol del usuario
         cursor.execute('SELECT Rol FROM tb_doctores WHERE RFC = %s', [user])
         rol = cursor.fetchall()
-        print("el rol fue ", rol)
 
         # verificar si el usuario existe, si existe verificar su rol, si el rol es 1 redireccionar a la pagina "doctores.html", si no redireccionar a la pagina "admins.html"
         if len(data) == 1:
@@ -193,7 +242,8 @@ def login():
                     session['rol'] = doctor
                     # flash con un mensaje de bienvenida y el nombre del usuario
                     flash("Bienvenido dr" + data[0][2])
-                    return redirect(url_for('doctores'))
+                    # redireccionar a la ruta /doctores en el archivo "doctor.py"
+                    return redirect(url_for('second.doctores'))
                 else:
                     flash("Contraseña incorrecta")
                     return render_template('index.html')           

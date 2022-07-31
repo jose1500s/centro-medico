@@ -9,40 +9,14 @@
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <title>Pacientes</title>
+    <title>Citas</title>
     <link rel="shortcut icon" href="../../static/img/faviconLOGO.png" type="image/x-icon">
 
-    <style>
-        .formulario {
-            width: 700px;
-            margin: 0 auto;
-        }
-        .formulario .input-group {
-            padding: 20px;
-        }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+    <link rel="stylesheet" href="../static/css/receta.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="../static/css/verCitas.css">
 
-        .input-group label {
-            font-size: 20px;
-        }
-        .boton-registro {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .input-group button {
-            background-color: #695CFE;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            font-size: 23px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 50%;
-        }
-        .input-group button :hover {
-            background-color: #5a4fd8;
-        }
-    </style>
 </head>
 <body>
   <!-- ver los mensajes flash flask -->
@@ -61,7 +35,8 @@
         color: "#fff",
         fontSize: "1.2rem",
         textAlign: "center",
-        borderRadius: "0.5rem"
+        borderRadius: "0.5rem",
+        transform: translate("-50%", "50%"),
       }
     }).showToast();
     </script>
@@ -93,6 +68,8 @@
                 </li>
                 
                 <ul class="menu-links">
+
+                 
                   <li class="nav-link">
                     <a href="{{ url_for('second.doctorPacientes') }}">
                         <i class="fa-solid fa-folder-plus icon"></i>
@@ -101,7 +78,6 @@
                   </li>
 
                   <li class="nav-link">
-                    <!-- a href to rute in blueprint doctor second -->
                     <a href="{{ url_for('second.verMisPacientes') }}">
                         <i class="fa-solid fa-users-viewfinder icon"></i>
                         <span class="text nav-text">Consultar Mis<br> Pacientes</span>
@@ -109,14 +85,14 @@
                   </li>
 
                     <li class="nav-link">
-                        <a href="/exploracion_diagnostico">
+                        <a href="{{ url_for('second.exploracionDiagnostico') }}">
                             <i class="fa-solid fa-stethoscope icon"></i>
                             <span class="text nav-text">Exploración y <br>Diagnóstico</span>
                         </a>
                     </li>
 
                     <li class="nav-link">
-                        <a href="/consultar_citas">
+                        <a href="{{ url_for('second.consultarCitas') }}">
                             <i class="fa-solid fa-book-medical icon"></i>
                             <span class="text nav-text">Consultar Citas</span>
                         </a>
@@ -149,40 +125,87 @@
 
     <section class="home">
         <div class="nombre">
-          <div class="text">{{nombre}} <br> {{rfc}} </div>
-
+          <div class="text">
+             <input type="text" id="nombre_doctor" value="{{nombre}}" readonly >
+             <br>
+             <input type="text" id="rfc_doctor" value="{{rfc}}" readonly>
+          </div>
           <i class="fa-solid fa-monitor-waveform icon"></i>
         </div>
-        <center><h2 id="titulo">Generar Nuevo Expediente</h2></center>
-        <center><p style="font-size: 14px;">Se te asignara este paciente en automatico!</p></center>
-        <div class="formulario">
-          <form action="/registrar_paciente" method="post">
-            <div class="input-group">
-              <label for="nombre">Nombre</label>
-              <input type="text" name="nombre" id="nombre" required>
+        <center><h2 id="titulo">Consulta de Citas</h2></center>
+        <center><p id="titulo-filtrar">Filtrar Por:</p></center>
+        
+        <div class="contenedor-filtros">
+            <form action="/filtrar_cita_por_nombre" method="POST">
+                <div class="filtro-nombre-paciente">
+                    <input type="text" id="nombre_paciente" placeholder="Nombre del Paciente" name="nombre_paciente">
+                    <button id="btnFiltrar">Filtrar</button>
+                </div>
+               </form>
+                <form action="/filtrar_cita_por_fecha" method="POST"> 
+                    <div class="filtro-fecha-cita">
+                        <input type="date" id="fecha_cita" name="fecha_cita" value="">
+                        <button id="btnFiltrarFecha">Filtar</button>
+                    </div>
+                </form>
+          </div>
+          
+        
+
+        <div class="tablas">
+            <div class="contenedor-tabla-1">
+                <table class="tabla-1">
+                    <thead>
+                        <tr>
+                            <th>ID <br> Cita</th>
+                            <th>ID <br> Paciente</th>
+                            <th>Doctor que <br> Atendio</th>
+                            <th>Fecha</th>
+                            <th>Peso</th>
+                            <th>Altura</th>
+                            <th>Temperatura</th>
+                            <th>Latidos</th>
+                            <th>saturacion</th>
+                            <th>Glucosa</th>
+                            <th>Edad</th>
+                            <th>Sintomas</th>
+                            <th>Tratamiento</th>
+                            <th>Estudios</th>
+                            <th>Indicaciones</th>
+                            <th>Re Imprimir <br> Receta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cita in citas %}
+                        <tr>
+                            <td>{{cita.0}}</td>
+                            <td>{{cita.1}}</td>
+                            <td>{{cita.2}}</td>
+                            <td>{{cita.3}}</td>
+                            <td>{{cita.4}}</td>
+                            <td>{{cita.5}}</td>
+                            <td>{{cita.6}}</td>
+                            <td>{{cita.7}}</td>
+                            <td>{{cita.8}}</td>
+                            <td>{{cita.9}}</td>
+                            <td>{{cita.10}}</td>
+                            <td>{{cita.11}}</td>
+                            <td>{{cita.12}}</td>
+                            <td>{{cita.13}}</td>
+                            <td>{{cita.14}}</td>
+                            <td>
+                                <a href="">
+                                    <i class="fa-solid fa-print icon"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            <div class="input-group">
-              <label for="fecha">Fecha de Nacimiento</label>
-              <input type="date" name="fecha" id="fecha" required>
-            </div>
-            <div class="input-group">
-              <label for="enfermedades">Enfermedades</label>
-              <input type="text" name="enfermedades" id="enfermedades">
-            </div>
-            <div class="input-group">
-              <label for="alergias">Alergias</label>
-              <input type="text" name="alergias" id="alergias">
-            </div>
-            <div class="input-group">
-              <label for="antecedentes">Antecedentes</label>
-              <input type="text" name="antecedentes" id="antecedentes">
-            </div>
-            <div class="input-group">
-              <div class="boton-registro">
-                <button type="submit" name="button">Registrar</button>
-              </div>
-            </div>
-          </form>
+        </div>
+
+
     <script src="../static/js/sideBar.js"></script>
 </body>
 </html>

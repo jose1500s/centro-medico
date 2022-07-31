@@ -59,14 +59,9 @@
     margin: 0 auto;
 }
 .signos {
-width: 290px;
-/* margin: 0 auto; */
-/* display: flex; */
-/* justify-content: center; */
-/* align-items: center; */
-display: grid;
-grid-template-columns: repeat(4,1fr);
-/* align-items: self-start; */
+    width: 290px;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
 }
 .signos .input-group input {
     width: 90px;
@@ -134,13 +129,14 @@ body.dark input#rfc_doctor {
     border: 1px solid #ccc;
 }
 
-.info {
+/* Causaba BUG con los mensajes de toastify, los hacia mas grandes y largos de lo que deberian */
+ .info-receta {
     display: grid;
     grid-template-columns: repeat(3,1fr);
     padding: 10px;
-}
+} 
 
-.info p input {
+.info-receta p input {
     width: 90px;
 }
 
@@ -206,4 +202,15 @@ body.dark input#rfc_doctor {
 }
 #btnImprimirReceta:hover {
     background-color: #5145d3;
+}
+
+#btn-re-imprimir-receta {
+    background-color: #695CFE;
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 50px;
+    padding: 10px;
 }
